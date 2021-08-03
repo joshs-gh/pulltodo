@@ -7,7 +7,7 @@ function ShowButton({ label }) {
   return (
     <button
       className={`font-thin mx-1 border-white hover:border-gray-200 border-2 px-1 ${
-        show === label.toLowerCase() ? "border-gray-300" : ""
+        show === label.toLowerCase() && "border-gray-300"
       }`}
       onClick={() =>
         UIStore.update((s) => {
