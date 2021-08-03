@@ -1,49 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 import NewTodo from "./components/NewTodo";
 import TodoItem from "./components/TodoItem";
 import TodoFooter from "./components/TodoFooter";
+import { UIStore } from "./UIStore";
 
 function App() {
-  const [todos, setTodos] = useState([]);
-  const [itemsLeft, setItemsLeft] = useState(0);
-  const [show, setShow] = useState("all");
-  const [tdid, setTdid] = useState(1);
-
-  const newTodo = (e) => {
-    setTodos([...todos, { tdid: tdid, todo: e, checked: false }]);
-    setItemsLeft(itemsLeft + 1);
-    setTdid(tdid + 1);
-  };
-
-  const checkedHandler = (tdid, checked) => {
-    setItemsLeft(checked ? itemsLeft - 1 : itemsLeft + 1);
-    setTodos(
-      todos.map((todo) =>
-        todo.tdid === tdid
-          ? { tdid: todo.tdid, todo: todo.todo, checked: checked }
-          : todo
-      )
-    );
-  };
-
-  const showHandler = (s) => {
-    setShow(s);
-  };
-
-  const delHandler = (tdid) => {
-    const t = todos.filter((todo) => todo.tdid !== tdid);
-    setTodos(t);
-    setItemsLeft(itemsLeft - 1);
-  };
-
-  const clearHandler = () => {
-    setTodos(todos.filter((todo) => !todo.checked));
-  };
+  const todos = UIStore.useState((s) => s.todos);
+  const itemsLeft = UIStore.useState((s) => s.itemsLeft);
+  const show = UIStore.useState((s) => s.show);
 
   return (
     <div className="bg-gray-200 mx-3 mt-5 pb-3 lg:w-1/3">
-      <NewTodo newTodo={newTodo}></NewTodo>
+      <NewTodo></NewTodo>
       {todos.map((t, i) => {
         switch (show) {
           case "all":
@@ -53,8 +22,6 @@ function App() {
                 tdid={t.tdid}
                 checked={t.checked}
                 key={i}
-                delHandler={delHandler}
-                checkedHandler={checkedHandler}
               ></TodoItem>
             );
           case "active":
@@ -65,8 +32,6 @@ function App() {
                   tdid={t.tdid}
                   checked={t.checked}
                   key={i}
-                  delHandler={delHandler}
-                  checkedHandler={checkedHandler}
                 ></TodoItem>
               );
             break;
@@ -78,8 +43,6 @@ function App() {
                   tdid={t.tdid}
                   checked={t.checked}
                   key={i}
-                  delHandler={delHandler}
-                  checkedHandler={checkedHandler}
                 ></TodoItem>
               );
             break;
@@ -89,11 +52,7 @@ function App() {
         }
         return null;
       })}
-      <TodoFooter
-        itemsLeft={itemsLeft}
-        showHandler={showHandler}
-        clearHandler={clearHandler}
-      ></TodoFooter>
+      <TodoFooter itemsLeft={itemsLeft}></TodoFooter>
     </div>
   );
 }

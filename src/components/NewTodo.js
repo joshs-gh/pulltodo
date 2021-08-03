@@ -1,6 +1,10 @@
 import React from "react";
+import { UIStore } from "../UIStore";
 
 function NewTodo(props) {
+  const todos = UIStore.useState((s) => s.todos);
+  const tdid = UIStore.useState((s) => s.tdid);
+
   return (
     <div className="mx-3 pt-0 pt-3">
       <input
@@ -8,7 +12,14 @@ function NewTodo(props) {
         placeholder="What needs to be done?"
         onKeyUp={(e) => {
           if (e.key === "Enter") {
-            props.newTodo(e.target.value);
+            UIStore.update((s) => {
+              s.todos = [
+                ...todos,
+                { tdid: tdid, todo: e.target.value, checked: false },
+              ];
+              s.tdid++;
+              s.itemsLeft++;
+            });
             e.target.value = "";
           }
         }}

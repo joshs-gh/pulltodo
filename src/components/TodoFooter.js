@@ -1,12 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import { UIStore } from "../UIStore";
 
 export default function TodoFooter(props) {
-  const [show, setShow] = useState("all");
-
-  const showHandler = (s) => {
-    setShow(s);
-    props.showHandler(s);
-  };
+  const show = UIStore.useState((s) => s.show);
 
   return (
     <div className="flex flex-col">
@@ -14,12 +10,16 @@ export default function TodoFooter(props) {
         <label className="text-xs">
           {props.itemsLeft} {props.itemsLeft === 1 ? "item" : "items"} left
         </label>{" "}
-        <div className="flex justify-center">
+        <div className="flex justify-center text-xs">
           <button
             className={`font-thin mx-1 border-white hover:border-gray-200 border-2 px-1 ${
               show === "all" ? "border-gray-300" : ""
             }`}
-            onClick={() => showHandler("all")}
+            onClick={() =>
+              UIStore.update((s) => {
+                s.show = "all";
+              })
+            }
           >
             All
           </button>
@@ -27,7 +27,11 @@ export default function TodoFooter(props) {
             className={`font-thin mx-1 border-white hover:border-gray-200 border-2 px-1 ${
               show === "active" ? "border-gray-300" : ""
             }`}
-            onClick={() => showHandler("active")}
+            onClick={() =>
+              UIStore.update((s) => {
+                s.show = "active";
+              })
+            }
           >
             Active
           </button>
@@ -35,14 +39,24 @@ export default function TodoFooter(props) {
             className={`font-thin mx-1 border-white hover:border-gray-200 border-2 px-1 ${
               show === "completed" ? "border-gray-300" : ""
             }`}
-            onClick={() => showHandler("completed")}
+            onClick={() =>
+              UIStore.update((s) => {
+                s.show = "completed";
+              })
+            }
           >
             Completed
           </button>
         </div>
         <button
-          className="font-thin hover:underline"
-          onClick={props.clearHandler}
+          className="font-thin hover:underline text-xs"
+          onClick={() =>
+            UIStore.update((s) => {
+              s.todos = s.todos.filter((t) => {
+                return !t.checked;
+              });
+            })
+          }
         >
           Clear Completed
         </button>
