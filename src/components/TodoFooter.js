@@ -1,9 +1,26 @@
 import React from "react";
 import { UIStore } from "../UIStore";
 
-export default function TodoFooter(props) {
+function ShowButton({ label }) {
   const show = UIStore.useState((s) => s.show);
 
+  return (
+    <button
+      className={`font-thin mx-1 border-white hover:border-gray-200 border-2 px-1 ${
+        show === label.toLowerCase() ? "border-gray-300" : ""
+      }`}
+      onClick={() =>
+        UIStore.update((s) => {
+          s.show = label.toLowerCase();
+        })
+      }
+    >
+      {label}
+    </button>
+  );
+}
+
+export default function TodoFooter(props) {
   return (
     <div className="flex flex-col">
       <div className="mx-3 p-3 bg-white shadow flex justify-between text-gray-500 font-thin items-center">
@@ -11,42 +28,9 @@ export default function TodoFooter(props) {
           {props.itemsLeft} {props.itemsLeft === 1 ? "item" : "items"} left
         </label>{" "}
         <div className="flex justify-center text-xs">
-          <button
-            className={`font-thin mx-1 border-white hover:border-gray-200 border-2 px-1 ${
-              show === "all" ? "border-gray-300" : ""
-            }`}
-            onClick={() =>
-              UIStore.update((s) => {
-                s.show = "all";
-              })
-            }
-          >
-            All
-          </button>
-          <button
-            className={`font-thin mx-1 border-white hover:border-gray-200 border-2 px-1 ${
-              show === "active" ? "border-gray-300" : ""
-            }`}
-            onClick={() =>
-              UIStore.update((s) => {
-                s.show = "active";
-              })
-            }
-          >
-            Active
-          </button>
-          <button
-            className={`font-thin mx-1 border-white hover:border-gray-200 border-2 px-1 ${
-              show === "completed" ? "border-gray-300" : ""
-            }`}
-            onClick={() =>
-              UIStore.update((s) => {
-                s.show = "completed";
-              })
-            }
-          >
-            Completed
-          </button>
+          <ShowButton label="All"></ShowButton>
+          <ShowButton label="Active"></ShowButton>
+          <ShowButton label="Completed"></ShowButton>
         </div>
         <button
           className="font-thin hover:underline text-xs"
